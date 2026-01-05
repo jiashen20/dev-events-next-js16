@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import {notFound} from "next/navigation";
 import {IEvent} from "@/database";
 import {getSimilarEventsBySlug} from "@/lib/actions/event.actions";
