@@ -2,7 +2,16 @@
 
 import {useState} from "react";
 import {createBooking} from "@/lib/actions/booking.actions";
-import posthog from "posthog-js";
+
+// Extend Window interface for PostHog
+declare global {
+  interface Window {
+    posthog?: {
+      capture: (event: string, properties?: Record<string, any>) => void;
+      captureException: (error: string) => void;
+    };
+  }
+}
 
 const BookEvent = ({ eventId, slug }: { eventId: string, slug: string;}) => {
     const [email, setEmail] = useState('');
@@ -15,10 +24,15 @@ const BookEvent = ({ eventId, slug }: { eventId: string, slug: string;}) => {
 
         if(success) {
             setSubmitted(true);
-            posthog.capture('event_booked', { eventId, slug, email })
+            // PostHog tracking - only if available
+            if (typeof window !== 'undefined' && window.posthog) {
+                window.posthog.capture('event_booked', { eventId, slug, email });
+            }
         } else {
-            console.error('Booking creation failed')
-            posthog.captureException('Booking creation failed')
+            console.error('Booking creation failed');
+            if (typeof window !== 'undefined' && window.posthog) {
+                window.posthog.captureException('Booking creation failed');
+            }
         }
     }
 

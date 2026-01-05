@@ -1,18 +1,16 @@
 import {Suspense} from "react";
 import EventDetails from "@/components/EventDetails";
-import { cacheLife } from "next/cache";
+
+// Make route dynamic
+export const dynamic = 'force-dynamic';
 
 const EventDetailsPage = async ({ params }: { params: Promise<{ slug: string }>}) => {
-  'use cache';
-  cacheLife('hours');
-    const slug = params.then((p) => p.slug);
+    const { slug } = await params;
 
     return (
-        <main>
-            <Suspense fallback={<div>Loading...</div>}>
-                <EventDetails params={slug} />
-            </Suspense>
-        </main>
+        <Suspense fallback={<div>Loading...</div>}>
+            <EventDetails params={Promise.resolve(slug)} />
+        </Suspense>
     )
 }
 export default EventDetailsPage
