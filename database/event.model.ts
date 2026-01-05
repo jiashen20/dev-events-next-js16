@@ -170,4 +170,3 @@ eventSchema.index({ slug: 1 }, { unique: true });
 // Create and export the Event model
 export const Event: Model<IEvent> =
   mongoose.models.Event || mongoose.model<IEvent>('Event', eventSchema);
-
